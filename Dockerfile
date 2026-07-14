@@ -1,7 +1,7 @@
 # Multi-stage, тот же паттерн, что в остальных сервисах.
 # Контекст сборки — родительская папка (replace на ../linkpulse-contracts):
 #   docker build -f linkpulse-auth/Dockerfile .
-FROM golang:1.26-alpine AS build
+FROM golang:1.26.5-alpine AS build
 
 WORKDIR /src
 
