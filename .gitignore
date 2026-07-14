@@ -1,0 +1,8 @@
+bin/
+coverage.out
+*.log
+.DS_Store
+
+# Ключи подписи JWT — никогда в git
+keys/
+*.pem
