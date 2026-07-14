@@ -13,7 +13,7 @@ COPY linkpulse-auth/ .
 # Только сервис; dev-утилита devtoken в образ не собирается.
 RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /out/auth ./cmd/auth
 
-FROM alpine:3.22
+FROM alpine:3.24
 
 RUN adduser -D -u 10001 app
 USER app
