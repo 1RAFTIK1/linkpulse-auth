@@ -46,6 +46,7 @@ func NewHandlers(gh *githubapi.Client, users Users, issuer *token.Issuer, fronte
 // Login — GET /auth/github/login: ставим state-cookie и уводим на GitHub.
 func (h *Handlers) Login(w http.ResponseWriter, r *http.Request) {
 	state := randomHex(16)
+	// #nosec G124 -- Secure управляется конфигом: false только для локального http-dev.
 	http.SetCookie(w, &http.Cookie{
 		Name:     stateCookie,
 		Value:    state,
@@ -67,8 +68,17 @@ func (h *Handlers) Callback(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "state mismatch", http.StatusBadRequest)
 		return
 	}
-	// Одноразовость: сразу гасим cookie.
-	http.SetCookie(w, &http.Cookie{Name: stateCookie, Path: "/auth/github", MaxAge: -1})
+	// Одноразовость: сразу гасим cookie. Атрибуты совпадают с выставленной
+	// кукой — иначе браузер может не сматчить её и не удалить.
+	// #nosec G124 -- Secure управляется конфигом: false только для локального http-dev.
+	http.SetCookie(w, &http.Cookie{
+		Name:     stateCookie,
+		Path:     "/auth/github",
+		MaxAge:   -1,
+		HttpOnly: true,
+		Secure:   h.secureCookies,
+		SameSite: http.SameSiteLaxMode,
+	})
 
 	code := r.URL.Query().Get("code")
 	if code == "" {

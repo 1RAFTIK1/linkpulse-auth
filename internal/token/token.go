@@ -43,7 +43,7 @@ type Verifier struct {
 
 // LoadPrivateKey читает RSA-ключ из PEM-файла (PKCS#1 или PKCS#8).
 func LoadPrivateKey(path string) (*rsa.PrivateKey, error) {
-	raw, err := os.ReadFile(path) //nolint:gosec // путь задаёт оператор через конфиг
+	raw, err := os.ReadFile(path) // #nosec G304 -- путь задаёт оператор через конфиг, не пользователь
 	if err != nil {
 		return nil, fmt.Errorf("чтение ключа: %w", err)
 	}
